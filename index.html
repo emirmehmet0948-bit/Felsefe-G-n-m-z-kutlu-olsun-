@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Felsefe AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ECECE6;--card:#F8F8F3;--ink:#101A33;--mute:#59617A;--line:rgba(16,26,51,.2);--hi:#A87A12;--accbg:rgba(168,122,18,.12);--btn:#101A33;--btnt:#F4F1E8;--ye:#1E7A4C;--ke:#9A6B00;--he:#A3321F;
+--serif:"Newsreader",Georgia,serif;--disp:"Cormorant Garamond",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0C1226;--card:#121B36;--ink:#ECE9DF;--mute:#99A1BA;--line:rgba(236,233,223,.18);--hi:#E2B84A;--accbg:rgba(226,184,74,.12);--btn:#E2B84A;--btnt:#0C1226;--ye:#7FD6A2;--ke:#E2B84A;--he:#F0907D}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.6;padding:max(18px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));display:flex;justify-content:center}
+main{width:100%;max-width:620px}
+.hd{position:relative;padding:6px 0 20px;overflow:hidden}
+.hd::after{content:"Φ";position:absolute;right:-4px;top:-14px;font-family:var(--disp);font-size:180px;line-height:1;color:var(--hi);opacity:.18;pointer-events:none}
+.eye{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--hi)}
+h1{font-family:var(--disp);font-weight:600;font-size:clamp(46px,14vw,78px);line-height:.92;margin:12px 0 14px;letter-spacing:-.02em}
+h1 em{font-style:italic;font-weight:500;color:var(--hi)}
+.sub{color:var(--mute);margin:0;max-width:34ch;font-style:italic}
+.col{height:14px;border-top:3px solid var(--ink);border-bottom:1px solid var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 2px,transparent 2px 7px);margin-bottom:2px}
+nav{display:flex;border-bottom:1px solid var(--line);margin-bottom:26px}
+nav button{flex:1;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);background:none;border:0;border-bottom:3px solid transparent;padding:14px 4px;cursor:pointer;margin-bottom:-1px}
+nav button span{color:var(--hi);margin-right:6px}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--hi)}
+section>*{animation:up .35s ease both}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+h2{font-family:var(--disp);font-weight:600;font-size:clamp(28px,7.4vw,38px);line-height:1.1;margin:0 0 18px;letter-spacing:-.01em}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-size:18px;line-height:1.4;color:var(--ink);background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:2px;padding:15px 16px;margin:0 0 10px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
+.opt:hover{border-left-color:var(--hi);transform:translateX(3px)}
+.opt.sel{border-color:var(--ink);border-left:5px solid var(--hi);background:var(--accbg)}
+.btn{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--btnt);background:var(--btn);border:0;border-radius:2px;padding:15px 22px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--hi)}
+.btn.alt{background:none;color:var(--ink);border:1px solid var(--ink)}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+textarea{width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:2px;padding:14px;min-height:110px;resize:vertical}
+textarea:focus{border-color:var(--hi);outline:0}
+label{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:18px 0 8px}
+.err{font-family:var(--mono);font-size:12px;color:var(--he);min-height:22px;margin:6px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:2px;padding:16px 18px;margin:0 0 12px}
+.card.me{border-top-color:var(--hi);box-shadow:5px 5px 0 var(--accbg)}
+.card b{font-family:var(--disp);font-size:25px;font-weight:600;line-height:1.1}
+.card p{margin:8px 0 0;font-size:16px}
+.tag{display:inline-block;vertical-align:middle;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid currentColor;border-radius:2px;padding:2px 7px;margin-left:8px;color:var(--hi)}
+.tag.te{color:var(--ye)}.tag.tk{color:var(--ke)}.tag.th{color:var(--he)}
+.note{font-size:15px;font-style:italic;color:var(--mute);margin:16px 0}
+.row{margin:0 0 16px}
+.row .l{display:flex;justify-content:space-between;gap:12px;font-size:16px;margin-bottom:6px}
+.row .l span:last-child{font-family:var(--mono);font-size:13px;color:var(--mute);white-space:nowrap}
+.bar{height:12px;background:var(--line);border-radius:1px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--hi);transition:width .5s}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.trail{font-family:var(--mono);font-size:12px;color:var(--mute);margin:0 0 14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header class="hd"><div class="eye">Felsefe × Yapay zekâ</div><h1>Felsefe <em>AI</em></h1><p class="sub">Yapay zekâ düşünebilir mi? Düşün, oy ver, seçimlerinle ilerle.</p></header>
+<div class="col" aria-hidden="true"></div>
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="ai"><span>01</span>Soru</button>
+<button role="tab" aria-selected="false" data-t="poll"><span>02</span>Anket</button>
+<button role="tab" aria-selected="false" data-t="maze"><span>03</span>Labirent</button>
+</nav>
+<section id="ai"></section>
+<section id="poll" hidden></section>
+<section id="maze" hidden></section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var mem={};
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return mem[k]!==undefined?mem[k]:d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){mem[k]=v}}
+var ST={e:"Evet",k:"Kısmen",h:"Hayır"};
+
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){
+document.querySelectorAll("nav button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+["ai","poll","maze"].forEach(function(s){$(s).hidden=s!==b.dataset.t});
+if(b.dataset.t==="poll")drawPoll();}});
+
+var AI=[
+{q:"Yapay zekâ bilinç sahibi olabilir mi?",v:[
+["Searle","h","Bir sistem sembolleri kurallara göre işleyebilir, ama bu onu bilinçli yapmaz. Simülasyon, gerçekliğin kendisi değildir."],
+["Dennett","e","Bilinç gizemli bir öz değil, birbirine bağlı işlevlerin toplamıdır. Yeterince karmaşık bir sistemde ortaya çıkabilir."],
+["Chalmers","k","Deneyimin neden var olduğu zor bir problemdir. Doğru örgütlenme bilinç doğurabilir, ama bunu henüz kanıtlayamayız."],
+["Descartes","h","Düşünen töz, bedenden ve maddeden ayrıdır. Salt makine esnek bir akıl yürütme gösteremez."]]},
+{q:"Ahlaki kararları algoritmalar verebilir mi?",v:[
+["Bentham ve Mill","e","Eylemin doğruluğu sonuçlarındaki mutluluğa bağlıysa, bu hesaplanabilir. Algoritma bunu insandan iyi yapabilir."],
+["Kant","h","Ahlak, özgür bir iradenin ödev bilinciyle seçmesidir. Programlanmış bir sistem ilkeyi seçmez, uygular."],
+["Aristoteles","k","Erdem, deneyimle kazanılan pratik bilgeliktir. Algoritma kuralları uygulayabilir ama durumun ince ayrımlarını yakalaması zordur."]]},
+{q:"Bir makine gerçekten anlayabilir mi?",v:[
+["Turing","e","Anlamanın ne olduğunu tartışmak yerine davranışa bakalım. Ayırt edilemeyecek kadar iyi konuşan sistem düşünüyor sayılabilir."],
+["Searle","h","Çin odası düşünce deneyi: Kuralları izleyen biri Çince cevap verebilir ama tek kelimesini anlamaz. Biçim, anlam üretmez."],
+["Wittgenstein","k","Anlam, sözcüğün kullanımında yaşar. Makine yaşam biçimimizin dil oyunlarına gerçekten katılırsa anlam tartışması değişir."]]},
+{q:"İnsan kararlarında ne kadar özgürdür?",v:[
+["Sartre","e","İnsan özgür olmaya mahkûmdur. Koşullar ne olursa olsun nasıl tepki vereceğimizi biz seçeriz."],
+["Spinoza","h","Özgürlük inancı, nedenlerimizi bilmemekten doğar. Her karar önceki nedenlerin sonucudur."],
+["Hume","k","Eylemlerimiz nedenlere bağlıdır, ama istediğimizi yapabilmek de özgürlüktür. İkisi birbirini dışlamaz."]]}];
+var aq=0,as=null;
+function aiHome(){
+var h='<h2>Bir soru seç</h2>';
+AI.forEach(function(d,k){h+='<button class="opt" data-k="'+k+'">'+d.q+'</button>'});
+$("ai").innerHTML=h;
+$("ai").querySelectorAll(".opt").forEach(function(b){b.onclick=function(){aq=+b.dataset.k;aiForm()}});}
+function aiForm(){
+as=null;var d=AI[aq];
+$("ai").innerHTML='<h2>'+d.q+'</h2><div>'+Object.keys(ST).map(function(k){return '<button class="opt" data-s="'+k+'">'+ST[k]+'</button>'}).join("")+'</div><label for="why">Gerekçen nedir?</label><textarea id="why" placeholder="Neden böyle düşünüyorsun? Bir örnek verebilirsin."></textarea><p class="err" id="e1" role="alert"></p><div class="acts"><button class="btn" id="cmp">Filozoflarla karşılaştır</button><button class="btn alt" id="bk">Sorulara dön</button></div>';
+var os=$("ai").querySelectorAll(".opt");
+os.forEach(function(b){b.onclick=function(){as=b.dataset.s;os.forEach(function(x){x.className="opt"+(x===b?" sel":"")});$("e1").textContent=""}});
+$("bk").onclick=aiHome;
+$("cmp").onclick=function(){
+var w=$("why").value.trim();
+if(!as){$("e1").textContent="Önce bir seçenek seç.";return}
+if(w.length<20){$("e1").textContent="Gerekçeni en az bir cümleyle yaz.";return}
+aiRes(w)};}
+function aiRes(w){
+var d=AI[aq];
+$("ai").innerHTML='<h2>'+d.q+'</h2><div class="card me"><b>Senin cevabın</b><span class="tag t'+as+'">'+ST[as]+'</span><p id="mine"></p></div><div id="ph"></div><p class="note">Filozofların görüşü tek doğru cevap değil, düşünmen için bir karşılaştırmadır. Gerekçende hangi varsayımı sorgulamak isterdin?</p><div class="acts"><button class="btn" id="ag">Başka soru</button></div>';
+$("mine").textContent=w;
+var h="";
+d.v.forEach(function(p){h+='<div class="card"><b>'+p[0]+'</b><span class="tag t'+p[1]+'">'+ST[p[1]]+'</span>'+(p[1]===as?'<span class="tag">Sana yakın</span>':'')+'<p>'+p[2]+'</p></div>'});
+$("ph").innerHTML=h;
+$("ag").onclick=aiHome;}
+aiHome();
+
+var P=[
+{id:"ozgur",q:"İnsan kararlarında ne kadar özgürdür?",o:["Tamamen özgürüz.","Koşullarımız bizi etkiler.","Özgürlük sınırlıdır."]},
+{id:"bilinc",q:"Yapay zekâ bilinç sahibi olabilir mi?",o:["Evet.","Belki, emin değilim.","Hayır."]}];
+var pi=0,psel=null,pt=null,last=null,dev=ld("dev",null);
+if(!dev){dev=Math.random().toString(36).slice(2)+Date.now().toString(36);sv("dev",dev)}
+function zero(p){return p.o.map(function(){return 0})}
+function getPoll(p){
+return fetch("/api/polls/"+p.id+"?device="+encodeURIComponent(dev)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){d.online=true;return d}).catch(function(){return {counts:ld("v_"+p.id,zero(p)),voted:ld("d_"+p.id,false),online:false}});}
+function castVote(p,k){
+return fetch("/api/polls/"+p.id+"/vote",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({device:dev,opt:k})}).then(function(r){if(!r.ok)throw 0}).catch(function(){var c=ld("v_"+p.id,zero(p));c[k]++;sv("v_"+p.id,c);sv("d_"+p.id,true)});}
+function drawPoll(){var p=P[pi];getPoll(p).then(function(d){last=d;renderPoll(p,d)});}
+function renderPoll(p,d){
+var v=d.counts,tot=v.reduce(function(a,b){return a+b},0);
+var h='<h2>'+p.q+'</h2>';
+if(!d.voted){p.o.forEach(function(t,k){h+='<button class="opt'+(psel===k?" sel":"")+'" data-k="'+k+'">'+t+'</button>'});h+='<p class="err" id="e2" role="alert"></p><div class="acts"><button class="btn" id="vt">Oy ver</button></div>'}
+else h+='<p class="note">Oyun kaydedildi. Sonuçlar birkaç saniyede bir güncellenir.</p>';
+h+='<div style="margin-top:20px">';
+p.o.forEach(function(t,k){var pc=tot?Math.round(v[k]/tot*100):0;h+='<div class="row"><div class="l"><span>'+t+'</span><span>'+v[k]+' oy, %'+pc+'</span></div><div class="bar"><i style="width:'+pc+'%"></i></div></div>'});
+h+='</div><p class="note">Toplam '+tot+' oy.'+(d.online?'':' Çevrimdışı mod: oylar yalnızca bu cihazda tutulur.')+'</p><div class="acts">'+P.map(function(x,k){return k===pi?'':'<button class="btn alt" data-n="'+k+'">'+x.q+'</button>'}).join("")+'</div>';
+$("poll").innerHTML=h;
+$("poll").querySelectorAll(".opt").forEach(function(b){b.onclick=function(){psel=+b.dataset.k;renderPoll(p,last)}});
+$("poll").querySelectorAll("[data-n]").forEach(function(b){b.onclick=function(){pi=+b.dataset.n;psel=null;drawPoll()}});
+if($("vt"))$("vt").onclick=function(){
+if(psel===null){$("e2").textContent="Önce bir seçenek seç.";return}
+castVote(p,psel).then(function(){psel=null;drawPoll()})};
+clearTimeout(pt);pt=setTimeout(function(){if(!$("poll").hidden&&psel===null)drawPoll()},5000);}
+
+var M={
+s:{t:"Arkadaşın sınavda kopya çekti ve öğretmen sınıfa soruyor: Kim yaptı? Sen gördün. Ne yaparsın?",o:[["Bilmiyorum derim.","a"],["Gördüğümü söylerim.","b"],["Önce arkadaşımla konuşurum.","c"]]},
+a:{t:"Yalan söyledin, arkadaşın cezadan kurtuldu. Ertesi gün adil davranmayan bu durum bir başka öğrencinin notunu etkiledi.",o:[["Arkadaşımı korumak yeterli bir sebepti.","f"],["Yalan söylemek yanlıştı; gidip düzeltirim.","k"]]},
+b:{t:"Doğruyu söyledin. Arkadaşın sana küstü ve ceza alacak.",o:[["Kural herkes için aynı; sonuç ne olursa olsun doğrusunu yaptım.","k"],["Öğretmene arkadaşımın durumunu da anlatır, ceza yerine destek isterim.","m"]]},
+c:{t:"Arkadaşın pişman ama itiraf etmeye cesaret edemiyor.",o:[["Kendisi söylemezse ben söylerim.","v"],["Bir hafta süre veririm; herkes için en az zararlı yolu seçerim.","f"]]}};
+var E={
+f:["Faydacılık","Eylemi sonuçlarıyla değerlendirdin: en çok kişi için en az zarar. Bentham ve Mill'in yaklaşımına yakınsın. Eleştiri: Sonuçları öngörmek zordur ve azınlığın hakkı gözden kaçabilir."],
+k:["Kantçı ödev etiği","İlkeyi sonucun önüne koydun: doğruluk herkes için geçerli bir yasa olmalı. Eleştiri: İlke bazen insani durumu görmezden gelebilir."],
+m:["Bakım etiği","İlişkiyi ve ihtiyaç içindeki kişiyi merkeze aldın; adalet ile şefkati birlikte düşündün. Eleştiri: Yakınlarına kayırma riski doğurabilir."],
+v:["Erdem etiği","Dürüstlük ile sadakat arasında dengeyi, cesaret ve adalet erdemleriyle kurdun. Aristoteles'in yoluna yakınsın. Eleştiri: Doğru dengeyi bulmak deneyim ister."]};
+var mp=[];
+function mz(n){
+var h;
+if(M[n]){var d=M[n];h='<p class="trail">'+(mp.length?mp.join(" → "):"Başlangıç")+'</p><h2>'+d.t+'</h2>';
+d.o.forEach(function(o,k){h+='<button class="opt" data-n="'+o[1]+'" data-k="'+k+'">'+o[0]+'</button>'});}
+else{var e=E[n];h='<div class="card me"><b>'+e[0]+'</b><p>'+e[1]+'</p></div><p class="note">Doğru cevap yok. Oyun, farklı ahlaki yaklaşımları görmen için tasarlandı. Başka yoldan gidersen başka bir yaklaşımla karşılaşırsın.</p><div class="acts"><button class="btn" id="rs">Baştan oyna</button></div>';}
+$("maze").innerHTML=h;
+$("maze").querySelectorAll(".opt").forEach(function(b){b.onclick=function(){mp.push(M[n].o[+b.dataset.k][0]);mz(b.dataset.n)}});
+if($("rs"))$("rs").onclick=function(){mp=[];mz("s")};}
+mz("s");
+</script>
+</body>
+</html>
